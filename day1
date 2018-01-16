@@ -4,6 +4,6 @@
 | tail -1
 
 >>> a = [int(d) for d in open('tmp/day1.txt').read().strip()]
->>> l = len(a)
->>> sum(a+b for a, b in zip(a[:l/2],a[l/2:]) if a==b)
+>>> d = len(a)/2
+>>> sum(a+b for a, b in zip(a[:d],a[d:]) if a==b)
 
