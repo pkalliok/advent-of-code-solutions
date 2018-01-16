@@ -1,0 +1,9 @@
+(grep -o . < tmp/day1.txt; head -c1 tmp/day1.txt) \
+| uniq -c \
+| awk '{sum += ($1 - 1) * $2; print sum;}' \
+| tail -1
+
+>>> a = [int(d) for d in open('tmp/day1.txt').read().strip()]
+>>> l = len(a)
+>>> sum(a+b for a, b in zip(a[:l/2],a[l/2:]) if a==b)
+
