@@ -1,0 +1,12 @@
+grep -v '\(\<[a-z]*\>\).*\<\1\>' tmp/day4.txt \
+| wc -l
+
+sed 's/./&\n/g;s/$/\n|||\n/' tmp/day4.txt \
+| awk '/^ *$/ { word++; } { printf "%05d %s\n", word, $0; }' \
+| sort \
+| cut -c7- \
+| tr -d \\012 \
+| sed 's/|||/\n/g' \
+| grep -v '\(\<[a-z]*\>\).*\<\1\>' \
+| wc -l
+
