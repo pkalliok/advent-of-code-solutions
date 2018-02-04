@@ -1,4 +1,3 @@
-{-# LANGUAGE FlexibleContexts #-}
 
 import Data.Array.ST (STUArray)
 import Data.Array.MArray (MArray, getBounds, newListArray, writeArray, readArray)
@@ -11,18 +10,25 @@ withinBounds index arr =
  do (lower, upper) <- getBounds arr
     return $ (lower <= index) && (index <= upper)
 
-countJumps :: MArray a Int m => Int -> Int -> a Int Int -> m Int
-countJumps steps ip jumparr =
+solve rule jumps = runST $ (mkArray jumps >>= countJumps 0 1) where
+ mkArray jumps =
+  (newListArray (1, length jumps) jumps :: ST s (STUArray s Int Int))
+ countJumps steps ip jumparr =
   do continue <- withinBounds ip jumparr
      if continue then
       do offset <- readArray jumparr ip
-         writeArray jumparr ip (succ offset)
+         writeArray jumparr ip (rule offset)
          countJumps (succ steps) (ip + offset) jumparr
      else return steps
 
-solve jumps = runST
- $ ((newListArray (1, length jumps) jumps :: ST s (STUArray s Int Int))
-    >>= countJumps 0 1)
+firstHalfRule = succ
 
-main = readFile "tmp/day5.txt" >>= print . solve . parseInput
+secondHalfRule n
+ | n < 3 = succ n
+ | True  = pred n
+
+main =
+ do input <- readFile "tmp/day5.txt"
+    print $ solve firstHalfRule $ parseInput input
+    print $ solve secondHalfRule $ parseInput input
 
