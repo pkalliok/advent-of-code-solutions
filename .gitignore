@@ -1,0 +1,5 @@
+*.hi
+*.o
+/day5-monadic
+/day5-io
+/node_modules

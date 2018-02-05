@@ -33,3 +33,9 @@ main =
     solution2 <- solve secondHalfRule parsed
     putStrLn ("First: " ++ show solution1 ++ ", second: " ++ show solution2)
 
+-- $ time ./day5-io 
+-- First: 378980, second: 26889114
+--
+-- real	0m24.044s
+-- user	0m23.352s
+-- sys	0m0.692s

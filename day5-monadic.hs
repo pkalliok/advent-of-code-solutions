@@ -32,3 +32,10 @@ main =
     print $ solve firstHalfRule $ parseInput input
     print $ solve secondHalfRule $ parseInput input
 
+-- $ time ./day5-monadic 
+-- 378980
+-- 26889114
+--
+-- real	0m23.582s
+-- user	0m22.920s
+-- sys	0m0.660s
