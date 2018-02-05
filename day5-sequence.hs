@@ -1,5 +1,5 @@
 
-import Data.Sequence (Seq, fromList, lookup, adjust')
+import Data.Sequence (Seq, fromList, (!?), adjust')
 import Control.Arrow ((&&&))
 
 parseInput :: String -> Seq Int
@@ -7,7 +7,7 @@ parseInput = fromList . map read . lines
 
 solve rule = countSteps 0 0 where
  countSteps steps ip jumps =
-  case Data.Sequence.lookup ip jumps of
+  case jumps !? ip of
      Nothing  -> steps
      Just dip -> countSteps (succ steps) (ip + dip) (adjust' rule ip jumps)
 
