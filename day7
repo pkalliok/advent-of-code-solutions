@@ -1,0 +1,5 @@
+grep ' ->' tmp/day7.txt \
+| cut -d'>' -f2 \
+| tr -s ' ,' \\012 \
+| sort -u \
+| diff - <(grep -o '^[^ ]*' tmp/day7.txt | sort -u)
