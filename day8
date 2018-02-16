@@ -1,4 +1,13 @@
+
+CLEAN='s/dec -/inc /;s/dec /inc -/;s/inc/+=/;s/^\(\([^ ]*\).*\) if \(.*\)$'
+run() {
+ bc | sort -n | tail -1
+}
+
 (
-sed 's/dec -/inc /;s/dec /inc -/;s/inc/+=/;s/^\(.*\) if \(.*\)$/if(\2) \1/' tmp/day8.txt
+sed "$CLEAN/if(\\3) \\1/" tmp/day8.txt
 cut -d' ' -f1 tmp/day8.txt | sort -u
-) | bc | sort -n | tail -1
+) | run
+
+sed "$CLEAN/if(\\3) \\1\\n\\2/" tmp/day8.txt | run
+
