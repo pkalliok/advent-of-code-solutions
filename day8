@@ -1,0 +1,4 @@
+(
+sed 's/dec -/inc /;s/dec /inc -/;s/inc/+=/;s/^\(.*\) if \(.*\)$/if(\2) \1/' tmp/day8.txt
+cut -d' ' -f1 tmp/day8.txt | sort -u
+) | bc | sort -n | tail -1
