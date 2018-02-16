@@ -32,9 +32,10 @@
   (let [parent (smallest-unbalanced programs)
         ch (children parent)
         [wrong-weight right-weight]
-        (->> ch (map total-weight) frequencies (map reverse) (map vec) sort (map second))
+         (->> ch (map total-weight) frequencies (map reverse) (map vec)
+           sort (map second))
         wrong-ch (first (filter #(= wrong-weight (total-weight %)) ch))]
-    (+ (weight wrong-ch) right-weight (- wrong-weight))))
+    (+ (weight wrong-ch) (- right-weight wrong-weight))))
 
 (println (apply solve (prop-maps (parse-input raw-input))))
 
