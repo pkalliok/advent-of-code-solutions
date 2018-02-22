@@ -1,6 +1,10 @@
+#!/usr/bin/guile \
+-e main --use-srfi=1 -s
+!#
 
 (define (rotate n l)
-  (take (drop (append l l l) n) (length l)))
+  (let ((len (length l)))
+    (take (drop (append l l) (modulo n len)) len)))
 
 (define (twist n l)
   (append (reverse (take l n)) (drop l n)))
@@ -18,9 +22,7 @@
      twist-lengths)
    (iota 256) 0 0))
 
-(define input '(70 66 255 2 48 0 54 48 80 141 244 254 160 108 1 41))
-
-(define (main)
-  (display (apply * (take (tie-knot input) 2)))
+(define (main args)
+  (write (tie-knot (read)))
   (newline))
 

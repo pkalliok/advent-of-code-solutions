@@ -1,0 +1,27 @@
+#!/bin/bash
+
+cat tmp/day10.txt \
+| sed 's/,/ /g;s/.*/(&)/' \
+| ./day10.ss \
+| tr -d '(' \
+| awk '{ print $1 * $2; }'
+
+# https://unix.stackexchange.com/questions/292344/how-to-calculate-hexadecimal-xor-from-shell
+
+head -c -1 tmp/day10.txt \
+| od -t u1 \
+| cut -c9- \
+| tr -s \\012 ' ' \
+| sed 's/$/ 17 31 73 47 23/' \
+| sed 's/.*/& & & &/' \
+| sed 's/.*/& & & &/' \
+| sed 's/.*/( & & & & )/' \
+| ./day10.ss \
+| tr -s '( )' \\012 \
+| sed '/./!d' \
+| paste - - - - - - - - - - - - - - - - \
+| sed 's/\t/ ^ /g;s/.*/printf "%02x" $(( & ))/' \
+| bash
+
+echo
+
