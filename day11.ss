@@ -32,13 +32,13 @@
 
 (define (dist-from-origin p) (hex-manhattan-distance '(0 . 0) p))
 
-(define (scan f i ls)
-  (if (null? ls) '()
-    (let ((nextval (f (car ls) i)))
-      (cons nextval (scan f nextval (cdr ls))))))
+(define (scan-reverse f i ls)
+  (let loop ((result '()) (currval i) (ls ls))
+    (if (null? ls) result
+      (loop (cons currval result) (f (car ls) currval) (cdr ls)))))
 
 (define (path-coordinates path)
-  (scan step '(0 . 0) path))
+  (scan-reverse step '(0 . 0) path))
 
 (define (path-max-distance path)
   (fold max 0 (map dist-from-origin (path-coordinates path))))
