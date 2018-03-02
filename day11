@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cat tmp/day11.txt \
+| sed 's/,/ /g;s/.*/(&)/' \
+| guile -e solve --use-srfi=1 -s day11.ss
