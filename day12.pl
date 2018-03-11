@@ -21,12 +21,25 @@ ws --> [].
 load_data(Rules) :-
 	phrase_from_file(rules(Rules), 'tmp/day12.txt').
 
-clustersize_for_node(Conns, Node, Size) :-
-	transitive_closure(Conns, Closure),
-	member(Node-Nodes, Closure),
-	length(Nodes, Size).
+magnitude(List, M) :- sort(List, Unique), length(Unique, M).
 
-solution(S) :-
+clustersize_for_node(Closure, Node, Size) :-
+	member(Node-Nodes, Closure),
+	magnitude(Nodes, Size).
+
+clusters([Node-Cluster|Clusters]) -->
+	{ sort(Cluster, Unique) },
+	[Unique],
+	clusters(Clusters).
+clusters([]) --> [].
+
+unique_clusters(Closure, Number) :-
+	clusters(Closure, Clusters, []),
+	magnitude(Clusters, Number).
+
+solution(S1, S2) :-
 	load_data(Rules),
-	clustersize_for_node(Rules, '0', S).
+	transitive_closure(Rules, Closure),
+	clustersize_for_node(Closure, '0', S1),
+	unique_clusters(Closure, S2).
 
