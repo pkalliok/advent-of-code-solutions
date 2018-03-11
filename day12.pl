@@ -1,5 +1,8 @@
 
-use_module(library(pio)).
+:- dynamic(link/2).
+:- dynamic(indirect_link_dynamic/2).
+
+:- use_module(library(pio)).
 
 rules([R|Rs]) --> rule(R), "\n", rules(Rs).
 rules([]) --> [].
@@ -20,14 +23,23 @@ ws --> [].
 load_data(Rules) :-
 	phrase_from_file(rules(Rules), 'tmp/day12.txt').
 
-read_line(Stream, Line) :- read_string(Stream, "\n", " ", 10, Line).
+linearise_rule(rule(Lhs, [Rhs|Rest])) -->
+	[link(Lhs, Rhs)],
+	linearise_rule(rule(Lhs, Rest)).
+linearise_rule(rule(Lhs, [Rhs])) --> [link(Lhs, Rhs)].
 
-stream_lines(Stream, [Line|Lines]) :-
-	read_line(Stream, Line),
-	stream_lines(Stream, Lines).
-stream_lines(_, []).
+linearise_rules([Rule|Rules]) --> linearise_rule(Rule), linearise_rules(Rules).
+linearise_rules([]) --> [].
 
-file_lines(File, Lines) :-
-	open(File, read, Stream),
-	stream_lines(Stream, Lines).
+initialise_data :-
+	load_data(Rules),
+	linearise_rules(Rules, Links, []),
+	maplist(assertz, Links).
+
+indirect_link(Init, Dest) :- indirect_link(Init, Init, Dest).
+indirect_link(Init, _, Y) :- indirect_link_dynamic(Init, Y), !.
+indirect_link(Init, X, X) :- assertz(indirect_link_dynamic(Init, X)).
+indirect_link(Init, X, Y) :-
+	link(X, Intermediate),
+	indirect_link(Init, Intermediate, Y).
 
