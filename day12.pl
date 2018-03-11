@@ -1,13 +1,11 @@
 
-:- dynamic(link/2).
-:- dynamic(indirect_link_dynamic/2).
-
 :- use_module(library(pio)).
+:- use_module(library(ugraphs)).
 
 rules([R|Rs]) --> rule(R), "\n", rules(Rs).
 rules([]) --> [].
 
-rule(rule(Lhs, Rhs)) --> identifier(Lhs), ws, "<->", ws, identifiers(Rhs).
+rule(Lhs-Rhs) --> identifier(Lhs), ws, "<->", ws, identifiers(Rhs).
 
 identifiers([Id|Ids]) --> identifier(Id), ws, ",", ws, identifiers(Ids).
 identifiers([Id]) --> identifier(Id).
@@ -23,23 +21,12 @@ ws --> [].
 load_data(Rules) :-
 	phrase_from_file(rules(Rules), 'tmp/day12.txt').
 
-linearise_rule(rule(Lhs, [Rhs|Rest])) -->
-	[link(Lhs, Rhs)],
-	linearise_rule(rule(Lhs, Rest)).
-linearise_rule(rule(Lhs, [Rhs])) --> [link(Lhs, Rhs)].
+clustersize_for_node(Conns, Node, Size) :-
+	transitive_closure(Conns, Closure),
+	member(Node-Nodes, Closure),
+	length(Nodes, Size).
 
-linearise_rules([Rule|Rules]) --> linearise_rule(Rule), linearise_rules(Rules).
-linearise_rules([]) --> [].
-
-initialise_data :-
+solution(S) :-
 	load_data(Rules),
-	linearise_rules(Rules, Links, []),
-	maplist(assertz, Links).
-
-indirect_link(Init, Dest) :- indirect_link(Init, Init, Dest).
-indirect_link(Init, _, Y) :- indirect_link_dynamic(Init, Y), !.
-indirect_link(Init, X, X) :- assertz(indirect_link_dynamic(Init, X)).
-indirect_link(Init, X, Y) :-
-	link(X, Intermediate),
-	indirect_link(Init, Intermediate, Y).
+	clustersize_for_node(Rules, '0', S).
 
