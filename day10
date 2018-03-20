@@ -21,7 +21,9 @@ knothash() {
 knothash_bits() {
  (echo -n 'ibase=16;obase=2;'; knothash | tr a-f A-F; echo) \
  | bc \
- | tr -d '\\\012'
+ | tr -d '\\\012' \
+ | awk '{printf "%128s\n", $0}' \
+ | tr ' ' '0'
 }
 
 day10_solutions() {
@@ -37,7 +39,7 @@ day10_solutions() {
 day14_fragmenter_grid() {
  seq 0 127 \
  | while read row; do
-	echo -n "jxqlasbh-$row" | knothash_bits; echo
+	echo -n "jxqlasbh-$row" | knothash_bits
  done
 }
 
