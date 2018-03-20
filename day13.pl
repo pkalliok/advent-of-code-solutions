@@ -1,4 +1,7 @@
 
+%natn(0).
+%natn(X) :- natn(Y), X is Y + 1.
+
 natn(6420).
 natn(X) :- natn(Y), X is Y + 60060.
 
@@ -24,5 +27,6 @@ ok(N) :-
 
 solution(S) :-
 	natn(S),
+	writeln(S),
 	ok(S).
 
