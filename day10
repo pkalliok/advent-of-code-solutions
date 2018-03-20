@@ -1,27 +1,51 @@
 #!/bin/bash
 
-cat tmp/day10.txt \
-| sed 's/,/ /g;s/.*/(&)/' \
-| ./day10.ss \
-| tr -d '(' \
-| awk '{ print $1 * $2; }'
-
 # https://unix.stackexchange.com/questions/292344/how-to-calculate-hexadecimal-xor-from-shell
 
-head -c -1 tmp/day10.txt \
-| od -t u1 \
-| cut -c9- \
-| tr -s \\012 ' ' \
-| sed 's/$/ 17 31 73 47 23/' \
-| sed 's/.*/& & & &/' \
-| sed 's/.*/& & & &/' \
-| sed 's/.*/( & & & & )/' \
-| ./day10.ss \
-| tr -s '( )' \\012 \
-| sed '/./!d' \
-| paste - - - - - - - - - - - - - - - - \
-| sed 's/\t/ ^ /g;s/.*/printf "%02x" $(( & ))/' \
-| bash
+knothash() {
+ od -t u1 \
+ | cut -c9- \
+ | tr -s \\012 ' ' \
+ | sed 's/$/ 17 31 73 47 23/' \
+ | sed 's/.*/& & & &/' \
+ | sed 's/.*/& & & &/' \
+ | sed 's/.*/( & & & & )/' \
+ | ./day10.ss \
+ | tr -s '( )' \\012 \
+ | sed '/./!d' \
+ | paste - - - - - - - - - - - - - - - - \
+ | sed 's/\t/ ^ /g;s/.*/printf "%02x" $(( & ))/' \
+ | bash
+}
 
-echo
+knothash_bits() {
+ (echo -n 'ibase=16;obase=2;'; knothash | tr a-f A-F; echo) \
+ | bc \
+ | tr -d '\\\012'
+}
+
+day10_solutions() {
+ cat tmp/day10.txt \
+ | sed 's/,/ /g;s/.*/(&)/' \
+ | ./day10.ss \
+ | tr -d '(' \
+ | awk '{ print $1 * $2; }'
+ 
+ head -c -1 tmp/day10.txt | knothash; echo
+}
+
+day14_fragmenter_grid() {
+ seq 0 127 \
+ | while read row; do
+	echo -n "jxqlasbh-$row" | knothash_bits; echo
+ done
+}
+
+day14_solution() {
+ day14_fragmenter_grid | tr -dc 1 | wc -c
+}
+
+#day14_fragmenter_grid | tr '01' '.#' > tmp/day14.txt
+
+day10_solutions
 
