@@ -5,4 +5,3 @@ sort -u |
 cut -c6- |
 grep -v _ |
 wc -l
-
