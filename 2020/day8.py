@@ -4,11 +4,7 @@ from itertools import accumulate
 
 instr_re = re.compile(r'(acc|nop|jmp) ([+-][0-9]+)')
 
-def parse_line(line):
-    try: return instr_re.match(line).groups()
-    except:
-        print(line)
-        raise
+def parse_line(line): return instr_re.match(line).groups()
 
 def file_to_program(f):
     return [(op, int(arg)) for op, arg in (parse_line(line) for line in f)]
