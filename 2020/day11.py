@@ -11,12 +11,12 @@ def expand_matrix(m):
     padded[1:-1, 1:-1] = m
     return padded
 
-dirs = [(x,y) for x in (0,1,2) for y in (0,1,2) if x!=1 or y!=1]
+dirs = [(x,y) for x in (-1,0,1) for y in (-1,0,1) if x!=0 or y!=0]
 
 def adjacents(m):
     ax0, ax1 = m.shape
     new = expand_matrix(m)
-    return (new[dx:dx+ax0, dy:dy+ax1] for dx, dy in dirs)
+    return (new[dx+1:dx+1+ax0, dy+1:dy+1+ax1] for dx, dy in dirs)
 
 def seats_in_next_round(seats, occupied):
     adj_sum = sum(adjacents(occupied))
