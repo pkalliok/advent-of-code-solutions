@@ -25,9 +25,12 @@ def seats_in_next_round(seats, occupied):
 
 def seat_history(seats, reloc_method):
     occupied = zeros(seats.shape, dtype=int)
+    gen = 0
     while True:
+        print("gen", gen, "occupied", occupied.sum())
         yield occupied
         occupied = reloc_method(seats, occupied)
+        gen += 1
 
 def nonchanging_order(history):
     h1, h2 = tee(history, 2)
