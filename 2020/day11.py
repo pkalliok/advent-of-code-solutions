@@ -1,5 +1,6 @@
 
-from numpy import matrix, zeros, multiply, fromfunction, vectorize
+from numpy import matrix, zeros, fromfunction, vectorize, \
+        logical_or, logical_and
 from itertools import tee
 
 def seat_matrix_from_file(f):
@@ -20,8 +21,8 @@ def adjacents(m):
 
 def seats_in_next_round(seats, occupied):
     adj_sum = sum(adjacents(occupied))
-    return ((multiply(seats, adj_sum == 0) +
-        multiply(occupied, adj_sum < 4)) > 0).astype(int)
+    return logical_or(logical_and(seats, adj_sum == 0),
+            logical_and(occupied, adj_sum < 4)).astype(int)
 
 def seat_history(seats, reloc_method):
     occupied = zeros(seats.shape, dtype=int)
