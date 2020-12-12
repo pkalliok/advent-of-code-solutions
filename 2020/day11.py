@@ -1,5 +1,5 @@
 
-from numpy import matrix, zeros, multiply, fromfunction
+from numpy import matrix, zeros, multiply, fromfunction, vectorize
 from itertools import tee
 
 def seat_matrix_from_file(f):
@@ -35,21 +35,24 @@ def nonchanging_order(history):
     return next(s1 for s1, s2 in zip(h1, h2) if (s1==s2).all())
 
 def first_visible_seat(seats, pos, dir):
-    newpos = tuple(coord+diff for coord, diff in zip(pos, dir))
+    newpos = (pos[0]+dir[0], pos[1]+dir[1])
+    if newpos[0] < 0 or newpos[1] < 0: return None
     try:
         if seats[newpos]: return newpos
-    except IndexError: return pos
+    except IndexError: return None
     return first_visible_seat(seats, newpos, dir)
 
 def count_occupied_visible_seats(seats, occupied, pos):
-    return sum(occupied[first_visible_seat(seats, pos, dir)] for dir in dirs)
+    return sum(occupied[visible_seat] for visible_seat in
+            (first_visible_seat(seats, pos, dir) for dir in dirs)
+            if visible_seat is not None)
 
 def seats_in_next_round2(seats, occupied):
     def seat_now_occupied(x, y):
         pos = (x, y)
         ovs = count_occupied_visible_seats(seats, occupied, pos)
-        return (seats[pos] and ovs == 0) or (occupied[pos] and ovs < 5)
-    return fromfunction(seat_now_occupied, seats.shape, dtype=int)
+        return 1*((seats[pos] and ovs == 0) or (occupied[pos] and ovs < 5))
+    return fromfunction(vectorize(seat_now_occupied), seats.shape, dtype=int)
 
 def seat_count_when_stabilises(seats, reloc_method):
     return nonchanging_order(seat_history(seats, reloc_method)).sum()
